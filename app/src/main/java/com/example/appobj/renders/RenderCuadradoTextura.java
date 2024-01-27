@@ -20,8 +20,7 @@ public class RenderCuadradoTextura implements GLSurfaceView.Renderer {
     private MarTextura mar;
 
     //Se utilizará para almacenar las identificaciones de textura generadas por OpenGL.
-    private int[] arrayTexturas = new int[1];
-    private int[] arrayTexturas2 = new int[1];
+    private int[] arrayTexturas = new int[2];
     private Context context;
 
     public RenderCuadradoTextura(Context context){
@@ -37,13 +36,28 @@ public class RenderCuadradoTextura implements GLSurfaceView.Renderer {
         gl.glEnable(gl.GL_TEXTURE_2D);
 
         atardecer = new CuadradoTextura();
-        // Generar identificador de textura para cuadrado1
-        gl.glGenTextures(1, arrayTexturas, 0);
-        Bitmap bitmap1 = BitmapFactory.decodeResource(context.getResources(), R.drawable.atardecer);
+
+        gl.glGenTextures(2, arrayTexturas, 0);
+
+        Bitmap bitmap;
+
+        bitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.atardecer);
         gl.glBindTexture(gl.GL_TEXTURE_2D, arrayTexturas[0]);
+        GLUtils.texImage2D(gl.GL_TEXTURE_2D, 0, bitmap, 0);
+        gl.glTexParameterf(gl.GL_TEXTURE_2D, gl.GL_TEXTURE_MAG_FILTER, gl.GL_LINEAR);
+        gl.glTexParameterf(gl.GL_TEXTURE_2D, gl.GL_TEXTURE_MIN_FILTER, gl.GL_LINEAR);
+
+        bitmap.recycle();
+
+        Bitmap bitmap1;
+        mar = new MarTextura();
+
+        bitmap1 = BitmapFactory.decodeResource(context.getResources(), R.drawable.mar);
+        gl.glBindTexture(gl.GL_TEXTURE_2D, arrayTexturas[1]);
         GLUtils.texImage2D(gl.GL_TEXTURE_2D, 0, bitmap1, 0);
         gl.glTexParameterf(gl.GL_TEXTURE_2D, gl.GL_TEXTURE_MAG_FILTER, gl.GL_LINEAR);
         gl.glTexParameterf(gl.GL_TEXTURE_2D, gl.GL_TEXTURE_MIN_FILTER, gl.GL_LINEAR);
+
         bitmap1.recycle();
     }
 
@@ -74,15 +88,18 @@ public class RenderCuadradoTextura implements GLSurfaceView.Renderer {
         gl.glMatrixMode(gl.GL_MODELVIEW);
         gl.glLoadIdentity();
 
-        gl.glTranslatef(0,0,-4);
+        // Triangulo0
+        gl.glBindTexture(GL10.GL_TEXTURE_2D, arrayTexturas[0]);//Textura a usar
+        gl.glTranslatef(0,-3,-4);
         gl.glRotatef(0,0,1,0);
         gl.glScalef(3.0f,2.0f,1.0f);
         atardecer.dibujar(gl);
 
-        gl.glTranslatef(0,2,-4);
+        // Triangulo0
+        gl.glBindTexture(GL10.GL_TEXTURE_2D, arrayTexturas[1]);//Textura a usar
+        gl.glTranslatef(0,7,-4);
         gl.glRotatef(0,0,1,0);
-        gl.glScalef(3.0f,2.0f,1.0f);
-        //mar.dibujar(gl);
-
+        gl.glScalef(1.0f,1.0f,1.0f);
+        mar.dibujar(gl);
     }
 }

@@ -31,7 +31,7 @@ public class ColorActivities extends Activity{
         //renderer = new ColorRenderer();//esta linea de codigo dibuja los colores en la pantalla
         //renderer = new ColorRenderer1();//esta linea de codigo dibuja los colores en la pantalla
         //renderer = new RenderObjModel(getApplicationContext());
-        renderer = new RenderMarTextura(getApplicationContext());
+        renderer = new RenderCuadradoTextura(getApplicationContext());
         view.setRenderer(renderer);
         setContentView(view);
 
