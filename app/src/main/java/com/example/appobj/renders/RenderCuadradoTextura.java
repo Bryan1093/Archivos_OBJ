@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.opengl.GLSurfaceView;
+import android.opengl.GLU;
 import android.opengl.GLUtils;
 
 import javax.microedition.khronos.egl.EGLConfig;
@@ -18,6 +19,7 @@ public class RenderCuadradoTextura implements GLSurfaceView.Renderer {
     private float vIncremento;
     private CuadradoTextura atardecer;
     private MarTextura mar;
+    private float rotacion = 0;
 
     //Se utilizará para almacenar las identificaciones de textura generadas por OpenGL.
     private int[] arrayTexturas = new int[2];
@@ -69,7 +71,7 @@ public class RenderCuadradoTextura implements GLSurfaceView.Renderer {
         float bottom = -1.0f / aspectRatio;
         float top = 1.0f / aspectRatio;
         float near = 1.0f;
-        float far = 10.0f;
+        float far = 30.0f;
         gl.glViewport(0, 0, ancho, alto);//origen "x=0" y "y=0" por defecto alto y ancho de la pantalla, es practicamente la ventana de copordenas donde se va a dibujar
         gl.glMatrixMode(gl.GL_PROJECTION);
         gl.glLoadIdentity();//
@@ -77,8 +79,6 @@ public class RenderCuadradoTextura implements GLSurfaceView.Renderer {
 
         gl.glTexEnvf(gl.GL_TEXTURE_ENV, gl.GL_TEXTURE_ENV_MODE, gl.GL_REPLACE);//Configura el modo de mezcla de textura. Aqui usado para que no se mezcle con los colores definidos en la geometria.
     }
-
-
 
     @Override
     public void onDrawFrame(GL10 gl) {
@@ -88,18 +88,37 @@ public class RenderCuadradoTextura implements GLSurfaceView.Renderer {
         gl.glMatrixMode(gl.GL_MODELVIEW);
         gl.glLoadIdentity();
 
-        // Triangulo0
-        gl.glBindTexture(GL10.GL_TEXTURE_2D, arrayTexturas[0]);//Textura a usar
-        gl.glTranslatef(0,-3,-4);
-        gl.glRotatef(0,0,1,0);
-        gl.glScalef(3.0f,2.0f,1.0f);
+        // Configuración de la cámara utilizando gluLookAt
+        GLU.gluLookAt(gl,
+                -5.0f, 5.0f, 5.0f,   // Posición de la cámara
+                0.0f, 0.0f, 0.0f,   // Punto de mira
+                0, 1, 0);            // Orientación de la cámara (eje Y arriba)
+
+        // Aplicar rotación a la escena alrededor del eje Y
+        //gl.glRotatef(rotacion, 0.0f, 1.0f, 0.0f);
+
+        gl.glPushMatrix(); {
+
+        gl.glBindTexture(GL10.GL_TEXTURE_2D, arrayTexturas[0]);// Textura a usar
+        gl.glTranslatef(0, 2, -3);
+        gl.glScalef(3.0f, 2.0f, 1.0f);
         atardecer.dibujar(gl);
 
-        // Triangulo0
-        gl.glBindTexture(GL10.GL_TEXTURE_2D, arrayTexturas[1]);//Textura a usar
-        gl.glTranslatef(0,7,-4);
-        gl.glRotatef(0,0,1,0);
-        gl.glScalef(1.0f,1.0f,1.0f);
-        mar.dibujar(gl);
+        }gl.glPopMatrix();
+
+
+        gl.glPushMatrix();
+        {
+            gl.glBindTexture(GL10.GL_TEXTURE_2D, arrayTexturas[1]);// Textura a usar
+            gl.glTranslatef(0, 0, 0);
+            gl.glScalef(3f, 0.2f, 3.0f);
+            gl.glRotatef(90, 1.0f, 0.0f, 0.0f);
+            mar.dibujar(gl);
+        }gl.glPopMatrix();
+
+
+        // Actualizar el valor de rotación para el próximo fotograma
+        rotacion += 1.0f;
     }
+
 }
