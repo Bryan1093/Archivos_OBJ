@@ -7,6 +7,8 @@ import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 
+import com.example.appobj.renders.RenderCuadradoTextura;
+import com.example.appobj.renders.RenderMarTextura;
 import com.example.appobj.renders.RenderObjModel;
 
 public class ColorActivities extends Activity{
@@ -28,7 +30,8 @@ public class ColorActivities extends Activity{
 
         //renderer = new ColorRenderer();//esta linea de codigo dibuja los colores en la pantalla
         //renderer = new ColorRenderer1();//esta linea de codigo dibuja los colores en la pantalla
-        renderer = new RenderObjModel(getApplicationContext());
+        //renderer = new RenderObjModel(getApplicationContext());
+        renderer = new RenderMarTextura(getApplicationContext());
         view.setRenderer(renderer);
         setContentView(view);
 
