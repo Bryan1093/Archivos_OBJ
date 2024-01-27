@@ -28,10 +28,6 @@ public class MisColores {
             tmp.add(1f);tmp.add(1f);tmp.add(1f);tmp.add(1f);//BLANCO
         }
 
-
-
-
-
         float[] colores = new float[tmp.size()];
         for (int i = 0; i < tmp.size(); i++) {
             colores[i] = tmp.get(i);
@@ -39,7 +35,6 @@ public class MisColores {
 
         return colores;
     }
-
 
     public static float[] seisColores(){
 

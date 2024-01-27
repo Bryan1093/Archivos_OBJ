@@ -1,10 +1,11 @@
-package com.example.appobj;
+package com.example.appobj.renders;
 
 import android.content.Context;
 import android.opengl.GLSurfaceView;
 import android.opengl.GLU;
 
 import com.example.appobj.geometrias.ObjModel;
+import com.example.appobj.geometrias.Rectangulo;
 import com.example.appobj.utilidades.MisColores;
 
 import javax.microedition.khronos.egl.EGLConfig;
@@ -12,8 +13,8 @@ import javax.microedition.khronos.opengles.GL10;
 
 public class RenderObjModel implements GLSurfaceView.Renderer {
     private float vIncremento;
-    private ObjModel mona, dona, langosta, casco, cubo, laptop, pelota;
-
+    private Rectangulo rectangulo;
+    private ObjModel mona, dona, langosta, casco;
     private Context context;
 
     public RenderObjModel(Context context) {
@@ -28,6 +29,7 @@ public class RenderObjModel implements GLSurfaceView.Renderer {
         dona = new ObjModel("donaBlender.obj", MisColores.blancoYnegro(1000), this.context);
         langosta = new ObjModel("langosta.obj", new float[]{0, 0.2f, 0.9f, 1}, this.context);//10 000 poligonos/vertices
         casco = new ObjModel("casco.obj", MisColores.random(2500), this.context);
+        rectangulo = new Rectangulo();
     }
 
     @Override
@@ -96,6 +98,14 @@ public class RenderObjModel implements GLSurfaceView.Renderer {
             gl.glRotatef(180, 0, 0, 1);
             gl.glRotatef(180, 0, 1, 0);
             langosta.dibujar(gl);
+        }
+        gl.glPopMatrix();
+
+        gl.glPushMatrix();
+        {
+            gl.glTranslatef(0, -7f, -0);
+            gl.glScalef(1f, 0.4f, 1f);
+            rectangulo.dibujar(gl);
         }
         gl.glPopMatrix();
 

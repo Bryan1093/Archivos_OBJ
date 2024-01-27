@@ -10,9 +10,6 @@ import java.nio.FloatBuffer;
 import java.nio.ShortBuffer;
 
 import javax.microedition.khronos.opengles.GL10;
-
-
-
 public class ObjModel {
     private FloatBuffer bufferVertices;
     private ShortBuffer bufferIndices;

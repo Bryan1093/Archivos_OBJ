@@ -7,7 +7,7 @@ import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 
-import com.example.appobj.RenderObjModel;
+import com.example.appobj.renders.RenderObjModel;
 
 public class ColorActivities extends Activity{
 
