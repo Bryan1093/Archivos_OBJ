@@ -21,7 +21,7 @@ import javax.microedition.khronos.opengles.GL10;
 
 public class RenderObjModel implements GLSurfaceView.Renderer {
     private float vIncremento;
-    private ObjModel mona, dona, langosta, casco;
+    private ObjModel mona, dona, langosta, casco, acero,lego,taza;
     private CuadradoTextura atardecer;
     private MarTextura mar, arena,toalla;
     private float rotacion = 0;
@@ -45,6 +45,9 @@ public class RenderObjModel implements GLSurfaceView.Renderer {
         dona = new ObjModel("donaBlender.obj", MisColores.blancoYnegro(1000), this.context);
         langosta = new ObjModel("langosta.obj", new float[]{1, 0f, 0f, 1}, this.context);//10 000 poligonos/vertices
         casco = new ObjModel("casco.obj", MisColores.random(2500), this.context);
+        acero = new ObjModel("Acero.obj", new float[]{1, 0f, 0f, 1}, this.context);//10 000 poligonos/vertices
+        lego = new ObjModel("lego.obj", MisColores.random(10312), this.context);
+        taza = new ObjModel("taza.obj", new float[]{1, 1, 1, 1}, this.context);
 
         // Inicializar objeto Cilindro
         float cilindroRadius = 1.0f;
@@ -199,7 +202,15 @@ public class RenderObjModel implements GLSurfaceView.Renderer {
             gl.glRotatef(90, 1, 0, 0);
             gl.glRotatef(90, 0, 0, 1);
             gl.glRotatef(180, 0, 1, 0);
-            langosta.dibujar(gl);
+            //langosta.dibujar(gl);
+        }
+        gl.glPopMatrix();
+
+        gl.glPushMatrix();
+        {
+            gl.glTranslatef(4, 1f, 4);
+            gl.glScalef(0.8f, 0.8f, 0.8f);
+            taza.dibujar(gl);
         }
         gl.glPopMatrix();
 
@@ -208,7 +219,7 @@ public class RenderObjModel implements GLSurfaceView.Renderer {
             gl.glBindTexture(GL10.GL_TEXTURE_2D, arrayTexturas[0]);// Textura a usar
             gl.glTranslatef(0, 2.5f, -3);
             gl.glScalef(5.0f, 3.5f, 1.0f);
-            atardecer.dibujar(gl);
+            //atardecer.dibujar(gl);
 
         }gl.glPopMatrix();
 
@@ -218,7 +229,7 @@ public class RenderObjModel implements GLSurfaceView.Renderer {
             gl.glTranslatef(0, -1, 0);
             gl.glScalef(5f, 0.2f, 3.0f);
             gl.glRotatef(90, 1.0f, 0.0f, 0.0f);
-            mar.dibujar(gl);
+            //mar.dibujar(gl);
         }gl.glPopMatrix();
 
         gl.glPushMatrix();
@@ -227,14 +238,14 @@ public class RenderObjModel implements GLSurfaceView.Renderer {
             gl.glTranslatef(0, -1, 4);
             gl.glScalef(5f, 0.2f, 1.0f);
             gl.glRotatef(90, 1.0f, 0.0f, 0.0f);
-            arena.dibujar(gl);
+            //arena.dibujar(gl);
         }gl.glPopMatrix();
 
         gl.glPushMatrix();
         {
             gl.glTranslatef(-3, 0, 4);
             gl.glScalef(0.1f, 0.9f, 0.1f);
-            sombrilla.dibujar(gl);
+            //sombrilla.dibujar(gl);
         }
         gl.glPopMatrix();
 
@@ -254,20 +265,19 @@ public class RenderObjModel implements GLSurfaceView.Renderer {
 
             // Triangulo0
             gl.glBindTexture(GL10.GL_TEXTURE_2D, arrayTexturas[3]);//Textura a usar
-            triangulo.dibujarCara(gl, 0);
+            //triangulo.dibujarCara(gl, 0);
 
             // Triangulo1
             gl.glBindTexture(GL10.GL_TEXTURE_2D, arrayTexturas[4]);
-            triangulo.dibujarCara(gl, 1);
+            //triangulo.dibujarCara(gl, 1);
 
             // Triangulo2
             gl.glBindTexture(GL10.GL_TEXTURE_2D, arrayTexturas[5]);
-            triangulo.dibujarCara(gl, 2);
-
+            //triangulo.dibujarCara(gl, 2);
 
             // Triangulo3
             gl.glBindTexture(GL10.GL_TEXTURE_2D, arrayTexturas[6]);
-            triangulo.dibujarCara(gl, 3);
+            //triangulo.dibujarCara(gl, 3);
 
             gl.glDisableClientState(GL10.GL_VERTEX_ARRAY);
             gl.glDisableClientState(GL10.GL_COLOR_ARRAY);
@@ -281,7 +291,7 @@ public class RenderObjModel implements GLSurfaceView.Renderer {
             gl.glTranslatef(0, -0.8f, 4);
             gl.glScalef(2f, 0.2f, 0.4f);
             gl.glRotatef(90, 1.0f, 0.0f, 0.0f);
-            toalla.dibujar(gl);
+            //toalla.dibujar(gl);
         }gl.glPopMatrix();
 
     }
