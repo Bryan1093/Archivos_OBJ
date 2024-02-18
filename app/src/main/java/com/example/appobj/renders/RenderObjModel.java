@@ -10,6 +10,7 @@ import android.opengl.GLUtils;
 import com.example.appobj.R;
 import com.example.appobj.geometrias.Cilindro;
 import com.example.appobj.geometrias.CuadradoTextura;
+import com.example.appobj.geometrias.EsferaText;
 import com.example.appobj.geometrias.MarTextura;
 import com.example.appobj.geometrias.ObjModel;
 import com.example.appobj.geometrias.PiramideTextura;
@@ -21,13 +22,18 @@ import javax.microedition.khronos.opengles.GL10;
 
 public class RenderObjModel implements GLSurfaceView.Renderer {
     private float vIncremento;
-    private ObjModel mona, dona, langosta, casco, acero,lego,taza;
+    private ObjModel dona, langosta, ave,canoa,palmera,palmera2,sombrero,langosta2, langosta3,ave2;
     private CuadradoTextura atardecer;
     private MarTextura mar, arena,toalla;
+    private EsferaText balonPlaya;
     private float rotacion = 0;
     private Cilindro sombrilla;
     private PiramideTextura triangulo;
-    private int[] arrayTexturas = new int[8];
+    private float translacion = 1;
+    private float translacionDelta = 0.05f; // Incremento de translación por fotograma
+    private static final float MAX_TRANSLATION = 1.8f; // Límite superior de translación
+    private static final float MIN_TRANSLATION = -1.8f; // Límite inferior de translación
+    private int[] arrayTexturas = new int[9];
     private Context context;
     double[][] coloresCilindros = {
             {0.5, 0.5, 0.5, 1.0}, //sombrilla
@@ -39,15 +45,20 @@ public class RenderObjModel implements GLSurfaceView.Renderer {
 
     @Override
     public void onSurfaceCreated(GL10 gl, EGLConfig eglConfig) {
-        gl.glClearColor(0.07059f, 0.07059f, 0.07059f, 1.0f);
+        gl.glClearColor(1, 0.4667f, 0, 1.0f);
         gl.glEnable(GL10.GL_DEPTH_TEST);
-        mona = new ObjModel("monaBlender.obj", MisColores.random(967), this.context);
-        dona = new ObjModel("donaBlender.obj", MisColores.blancoYnegro(1000), this.context);
+
+        //dona = new ObjModel("donaBlender.obj", MisColores.blancoYnegro(1000), this.context);
+        dona = new ObjModel("donaBlender.obj", new float[]{0.902f, 0.0706f, 0.7922f, 1}, this.context);
         langosta = new ObjModel("langosta.obj", new float[]{1, 0f, 0f, 1}, this.context);//10 000 poligonos/vertices
-        casco = new ObjModel("casco.obj", MisColores.random(2500), this.context);
-        acero = new ObjModel("Acero.obj", new float[]{1, 0f, 0f, 1}, this.context);//10 000 poligonos/vertices
-        lego = new ObjModel("lego.obj", MisColores.random(10312), this.context);
-        taza = new ObjModel("taza.obj", new float[]{1, 1, 1, 1}, this.context);
+        langosta2 = new ObjModel("langosta.obj", new float[]{0.5f, 0.25f, 0.0f, 1.0f}, this.context);//10 000 poligonos/vertices
+        langosta3 = new ObjModel("langosta.obj", new float[]{0.5294f, 0.8078f, 0.9216f, 1}, this.context);//10 000 poligonos/vertices
+        ave = new ObjModel("ave.obj", new float[]{0, 0, 0, 1}, this.context);//10 000 poligonos/vertices
+        ave2 = new ObjModel("ave.obj", new float[]{0, 0, 0, 1}, this.context);//10 000 poligonos/vertices
+        sombrero = new ObjModel("sombrero.obj", new float[]{0.4f, 0.0667f, 0.0667f, 1}, this.context);
+        palmera = new ObjModel("palmera.obj", new float[]{0, 1, 0, 1}, this.context);
+        palmera2 = new ObjModel("palmera.obj", new float[]{0, 1, 0, 1}, this.context);
+        canoa = new ObjModel("cannoe.obj", new float[]{0.5451f, 0.2706f, 0.0745f, 1}, this.context);
 
         // Inicializar objeto Cilindro
         float cilindroRadius = 1.0f;
@@ -60,7 +71,7 @@ public class RenderObjModel implements GLSurfaceView.Renderer {
 
         atardecer = new CuadradoTextura();
 
-        gl.glGenTextures(8, arrayTexturas, 0);
+        gl.glGenTextures(9, arrayTexturas, 0);
 
         Bitmap bitmap;
 
@@ -133,6 +144,17 @@ public class RenderObjModel implements GLSurfaceView.Renderer {
         gl.glTexParameterf(gl.GL_TEXTURE_2D, gl.GL_TEXTURE_MIN_FILTER, gl.GL_LINEAR);
 
         bitmap4.recycle();
+
+        Bitmap bitmap5;
+        balonPlaya = new EsferaText(30,30,1,1);
+
+        bitmap5 = BitmapFactory.decodeResource(context.getResources(), R.drawable.pelota);
+        gl.glBindTexture(gl.GL_TEXTURE_2D, arrayTexturas[8]);
+        GLUtils.texImage2D(gl.GL_TEXTURE_2D, 0, bitmap5, 0);
+        gl.glTexParameterf(gl.GL_TEXTURE_2D, gl.GL_TEXTURE_MAG_FILTER, gl.GL_LINEAR);
+        gl.glTexParameterf(gl.GL_TEXTURE_2D, gl.GL_TEXTURE_MIN_FILTER, gl.GL_LINEAR);
+
+        bitmap5.recycle();
     }
 
     @Override
@@ -143,7 +165,7 @@ public class RenderObjModel implements GLSurfaceView.Renderer {
         float bottom = -1.0f / aspectRatio;
         float top = 1.0f / aspectRatio;
         float near = 1.0f;
-        float far = 50.0f;
+        float far = 80.0f;
 
         gl.glViewport(0, 0, ancho, alto);
         gl.glMatrixMode(gl.GL_PROJECTION);
@@ -153,7 +175,7 @@ public class RenderObjModel implements GLSurfaceView.Renderer {
         gl.glTexEnvf(gl.GL_TEXTURE_ENV, gl.GL_TEXTURE_ENV_MODE, gl.GL_REPLACE);//Configura el modo de mezcla de textura. Aqui usado para que no se mezcle con los colores definidos en la geometria.
 
         GLU.gluLookAt(gl,
-                -5, 5, 5,
+                0, 5, 15,
                 0, 0, 0,
                 0, 1, 0
         );
@@ -170,82 +192,133 @@ public class RenderObjModel implements GLSurfaceView.Renderer {
         gl.glRotatef(vIncremento * 2, 0f, 1, 0);
         //----------------------------------------------------------------
 
-        /*gl.glPushMatrix();
+        gl.glPushMatrix();
         {
-            gl.glTranslatef(0, 5, 0);
-            //gl.glScalef(1.2f,1.2f,1.2f);
-            gl.glRotatef(vIncremento * 2, 1, 1, 1);
-            dona.dibujar(gl);
-        }
-        gl.glPopMatrix();*/
 
-        /*gl.glPushMatrix();
-        {
-            gl.glTranslatef(0, 2f, 0);
-            gl.glScalef(1.2f, 1.2f, 1.2f);
-            mona.dibujar(gl);
-        }
-        gl.glPopMatrix();*/
+            if (translacion >= MAX_TRANSLATION || translacion <= MIN_TRANSLATION) {
+                translacionDelta *= -1; // Cambiar la dirección
+            }
 
-        /*gl.glPushMatrix();
-        {
-            gl.glTranslatef(0, -0.5f, 0);
-            gl.glScalef(1.5f, 1.5f, 1.5f);
-            casco.dibujar(gl);
-        }
-        gl.glPopMatrix();*/
+            gl.glTranslatef(translacion, 0, 0);
+
+            gl.glPushMatrix();
+            {
+                gl.glBindTexture(GL10.GL_TEXTURE_2D, arrayTexturas[8]);// Textura a usar
+                gl.glTranslatef(1, 0.8f, 10.5f);
+                gl.glScalef(0.6f, 0.6f, 0.6f);
+                balonPlaya.dibujar(gl);
+            }gl.glPopMatrix();
 
         gl.glPushMatrix();
         {
-            gl.glTranslatef(4, -1f, 4);
-            gl.glScalef(0.15f, 0.15f, 0.15f);
+
+            gl.glTranslatef(3.5f, -1f, 9);
+            gl.glScalef(0.2f, 0.2f, 0.2f);
             gl.glRotatef(90, 1, 0, 0);
-            gl.glRotatef(90, 0, 0, 1);
+            gl.glRotatef(-90, 0, 0, 1);
             gl.glRotatef(180, 0, 1, 0);
-            //langosta.dibujar(gl);
+            langosta.dibujar(gl);
         }
         gl.glPopMatrix();
 
         gl.glPushMatrix();
         {
-            gl.glTranslatef(4, 1f, 4);
-            gl.glScalef(0.8f, 0.8f, 0.8f);
-            taza.dibujar(gl);
+            gl.glTranslatef(-0.5f, -1f, 9);
+            gl.glScalef(0.2f, 0.2f, 0.2f);
+            gl.glRotatef(90, 1, 0, 0);
+            gl.glRotatef(90, 0, 0, 1);
+            gl.glRotatef(180, 0, 1, 0);
+            langosta2.dibujar(gl);
+        }
+        gl.glPopMatrix();
+            translacion += translacionDelta;
+        }
+        gl.glPopMatrix();
+
+        gl.glPushMatrix();
+        {
+            gl.glTranslatef(-4.7f, -0.5f, 10);
+            gl.glScalef(0.04f, 0.04f, 0.04f);
+            gl.glRotatef(60, 1, 1, 0);
+            gl.glRotatef(270, 0, 0, 1);
+            sombrero.dibujar(gl);
+        }
+        gl.glPopMatrix();
+
+        gl.glPushMatrix();
+        {
+            gl.glTranslatef(0, -1f, 3);
+            gl.glScalef(0.5f, 0.5f, 0.5f);
+            canoa.dibujar(gl);
+        }
+        gl.glPopMatrix();
+
+        gl.glPushMatrix();
+        {
+            gl.glTranslatef(-6, -0.8f, 12);
+            gl.glScalef(0.08f, 0.4f, 0.08f);
+            palmera.dibujar(gl);
+        }
+        gl.glPopMatrix();
+
+        gl.glPushMatrix();
+        {
+            gl.glTranslatef(6, -0.8f, 12);
+            gl.glScalef(0.08f, 0.4f, 0.08f);
+            palmera2.dibujar(gl);
+        }
+        gl.glPopMatrix();
+
+        gl.glPushMatrix();
+        {
+            gl.glTranslatef(3, 5f, 3);
+            gl.glRotatef(90,0,1,0);
+            gl.glScalef(8f, 8f, 8f);
+            ave.dibujar(gl);
+        }
+        gl.glPopMatrix();
+
+        gl.glPushMatrix();
+        {
+            gl.glTranslatef(-3, 4.5f, 3);
+            gl.glRotatef(90,0,1,0);
+            gl.glScalef(8f, 8f, 8f);
+            ave2.dibujar(gl);
         }
         gl.glPopMatrix();
 
         gl.glPushMatrix(); {
 
             gl.glBindTexture(GL10.GL_TEXTURE_2D, arrayTexturas[0]);// Textura a usar
-            gl.glTranslatef(0, 2.5f, -3);
-            gl.glScalef(5.0f, 3.5f, 1.0f);
-            //atardecer.dibujar(gl);
+            gl.glTranslatef(0, 4.5f, -3);
+            gl.glScalef(7.0f, 5.5f, 1.0f);
+            atardecer.dibujar(gl);
 
         }gl.glPopMatrix();
 
         gl.glPushMatrix();
         {
             gl.glBindTexture(GL10.GL_TEXTURE_2D, arrayTexturas[1]);// Textura a usar
-            gl.glTranslatef(0, -1, 0);
-            gl.glScalef(5f, 0.2f, 3.0f);
+            gl.glTranslatef(0, -1, 2f);
+            gl.glScalef(7f, 0.2f, 5.0f);
             gl.glRotatef(90, 1.0f, 0.0f, 0.0f);
-            //mar.dibujar(gl);
+            mar.dibujar(gl);
         }gl.glPopMatrix();
 
         gl.glPushMatrix();
         {
             gl.glBindTexture(GL10.GL_TEXTURE_2D, arrayTexturas[2]);// Textura a usar
-            gl.glTranslatef(0, -1, 4);
-            gl.glScalef(5f, 0.2f, 1.0f);
+            gl.glTranslatef(0, -1, 10f);
+            gl.glScalef(7f, 0.2f, 3.0f);
             gl.glRotatef(90, 1.0f, 0.0f, 0.0f);
-            //arena.dibujar(gl);
+            arena.dibujar(gl);
         }gl.glPopMatrix();
 
         gl.glPushMatrix();
         {
-            gl.glTranslatef(-3, 0, 4);
-            gl.glScalef(0.1f, 0.9f, 0.1f);
-            //sombrilla.dibujar(gl);
+            gl.glTranslatef(-5, 0, 10);
+            gl.glScalef(0.1f, 2.5f, 0.1f);
+            sombrilla.dibujar(gl);
         }
         gl.glPopMatrix();
 
@@ -255,8 +328,8 @@ public class RenderObjModel implements GLSurfaceView.Renderer {
             gl.glEnableClientState(gl.GL_TEXTURE_COORD_ARRAY);//Estado de las coordenadas de textura
 
             //AFECTA TODA LA ESCENA--------------------------
-            gl.glTranslatef(-3, 0.9f, 4);
-            gl.glScalef(0.6f, 0.25f, 0.6f);
+            gl.glTranslatef(-5, 2.5f, 10);
+            gl.glScalef(1f, 0.45f, 1f);
             //gl.glRotatef(-vIncremento * 2, 1f, 0f, 0f);
             //gl.glRotatef(-vIncremento, 0f, 1f, 0f);
             //-----------------------------------------------
@@ -265,19 +338,19 @@ public class RenderObjModel implements GLSurfaceView.Renderer {
 
             // Triangulo0
             gl.glBindTexture(GL10.GL_TEXTURE_2D, arrayTexturas[3]);//Textura a usar
-            //triangulo.dibujarCara(gl, 0);
+            triangulo.dibujarCara(gl, 0);
 
             // Triangulo1
             gl.glBindTexture(GL10.GL_TEXTURE_2D, arrayTexturas[4]);
-            //triangulo.dibujarCara(gl, 1);
+            triangulo.dibujarCara(gl, 1);
 
             // Triangulo2
             gl.glBindTexture(GL10.GL_TEXTURE_2D, arrayTexturas[5]);
-            //triangulo.dibujarCara(gl, 2);
+            triangulo.dibujarCara(gl, 2);
 
             // Triangulo3
             gl.glBindTexture(GL10.GL_TEXTURE_2D, arrayTexturas[6]);
-            //triangulo.dibujarCara(gl, 3);
+            triangulo.dibujarCara(gl, 3);
 
             gl.glDisableClientState(GL10.GL_VERTEX_ARRAY);
             gl.glDisableClientState(GL10.GL_COLOR_ARRAY);
@@ -288,11 +361,31 @@ public class RenderObjModel implements GLSurfaceView.Renderer {
         gl.glPushMatrix();
         {
             gl.glBindTexture(GL10.GL_TEXTURE_2D, arrayTexturas[7]);// Textura a usar
-            gl.glTranslatef(0, -0.8f, 4);
-            gl.glScalef(2f, 0.2f, 0.4f);
+            gl.glTranslatef(0, -0.8f, 11);
+            gl.glScalef(3f, 0.5f, 0.7f);
             gl.glRotatef(90, 1.0f, 0.0f, 0.0f);
-            //toalla.dibujar(gl);
+            toalla.dibujar(gl);
+
         }gl.glPopMatrix();
 
+        gl.glPushMatrix();
+        {
+            gl.glTranslatef(1, -0.8f, 11);
+            gl.glScalef(0.5f,0.5f,0.3f);
+            gl.glRotatef(vIncremento * 2, 0, 1, 0);
+            dona.dibujar(gl);
+        }
+        gl.glPopMatrix();
+
+        gl.glPushMatrix();
+        {
+            gl.glTranslatef(-0.45f, -1f, 11);
+            gl.glScalef(0.2f, 0.2f, 0.2f);
+            gl.glRotatef(90, 1, 0, 0);
+            gl.glRotatef(90, 0, 0, 1);
+            gl.glRotatef(180, 0, 1, 0);
+            langosta3.dibujar(gl);
+        }
+        gl.glPopMatrix();
     }
 }
