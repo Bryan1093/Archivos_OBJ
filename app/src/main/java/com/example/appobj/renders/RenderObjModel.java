@@ -201,7 +201,6 @@ public class RenderObjModel implements GLSurfaceView.Renderer {
                 0, 1, 0
         );
     }
-
     @Override
     public void onDrawFrame(GL10 gl) {
         vIncremento += 0.5f;
@@ -210,7 +209,7 @@ public class RenderObjModel implements GLSurfaceView.Renderer {
         gl.glLoadIdentity();
 
         //TODA LA ESCENA--------------------------------------------------
-        //gl.glRotatef(vIncremento * 2, 0f, 1, 0);
+        gl.glRotatef(vIncremento * 2, 0f, 1, 0);
         //----------------------------------------------------------------
 
         gl.glPushMatrix();
