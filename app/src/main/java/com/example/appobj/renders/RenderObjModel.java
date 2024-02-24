@@ -74,7 +74,7 @@ public class RenderObjModel implements GLSurfaceView.Renderer {
 
         Bitmap bitmap;
 
-        bitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.atardecer);
+        bitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.atardecer2);
         gl.glBindTexture(gl.GL_TEXTURE_2D, arrayTexturas[0]);
         GLUtils.texImage2D(gl.GL_TEXTURE_2D, 0, bitmap, 0);
         gl.glTexParameterf(gl.GL_TEXTURE_2D, gl.GL_TEXTURE_MAG_FILTER, gl.GL_LINEAR);
@@ -210,7 +210,7 @@ public class RenderObjModel implements GLSurfaceView.Renderer {
         gl.glLoadIdentity();
 
         //TODA LA ESCENA--------------------------------------------------
-        gl.glRotatef(vIncremento * 2, 0f, 1, 0);
+        //gl.glRotatef(vIncremento * 2, 0f, 1, 0);
         //----------------------------------------------------------------
 
         gl.glPushMatrix();
