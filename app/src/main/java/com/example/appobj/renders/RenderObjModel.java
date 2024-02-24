@@ -23,17 +23,16 @@ import javax.microedition.khronos.opengles.GL10;
 public class RenderObjModel implements GLSurfaceView.Renderer {
     private float vIncremento;
     private ObjModel dona, langosta, ave,canoa,palmera,palmera2,sombrero,langosta2, langosta3,ave2;
-    private CuadradoTextura atardecer;
+    private CuadradoTextura atardecer, atardecer2, atardecer3;
     private MarTextura mar, arena,toalla;
     private EsferaText balonPlaya;
-    private float rotacion = 0;
     private Cilindro sombrilla;
     private PiramideTextura triangulo;
     private float translacion = 1;
     private float translacionDelta = 0.05f; // Incremento de translación por fotograma
     private static final float MAX_TRANSLATION = 1.8f; // Límite superior de translación
     private static final float MIN_TRANSLATION = -1.8f; // Límite inferior de translación
-    private int[] arrayTexturas = new int[9];
+    private int[] arrayTexturas = new int[11];
     private Context context;
     double[][] coloresCilindros = {
             {0.5, 0.5, 0.5, 1.0}, //sombrilla
@@ -52,7 +51,7 @@ public class RenderObjModel implements GLSurfaceView.Renderer {
         dona = new ObjModel("donaBlender.obj", new float[]{0.902f, 0.0706f, 0.7922f, 1}, this.context);
         langosta = new ObjModel("langosta.obj", new float[]{1, 0f, 0f, 1}, this.context);//10 000 poligonos/vertices
         langosta2 = new ObjModel("langosta.obj", new float[]{0.5f, 0.25f, 0.0f, 1.0f}, this.context);//10 000 poligonos/vertices
-        langosta3 = new ObjModel("langosta.obj", new float[]{0.5294f, 0.8078f, 0.9216f, 1}, this.context);//10 000 poligonos/vertices
+        langosta3 = new ObjModel("langosta.obj", new float[]{0, 0, 1, 1}, this.context);//10 000 poligonos/vertices
         ave = new ObjModel("ave.obj", new float[]{0, 0, 0, 1}, this.context);//10 000 poligonos/vertices
         ave2 = new ObjModel("ave.obj", new float[]{0, 0, 0, 1}, this.context);//10 000 poligonos/vertices
         sombrero = new ObjModel("sombrero.obj", new float[]{0.4f, 0.0667f, 0.0667f, 1}, this.context);
@@ -71,7 +70,7 @@ public class RenderObjModel implements GLSurfaceView.Renderer {
 
         atardecer = new CuadradoTextura();
 
-        gl.glGenTextures(9, arrayTexturas, 0);
+        gl.glGenTextures(11, arrayTexturas, 0);
 
         Bitmap bitmap;
 
@@ -86,7 +85,7 @@ public class RenderObjModel implements GLSurfaceView.Renderer {
         Bitmap bitmap1;
         mar = new MarTextura();
 
-        bitmap1 = BitmapFactory.decodeResource(context.getResources(), R.drawable.mar);
+        bitmap1 = BitmapFactory.decodeResource(context.getResources(), R.drawable.mar1);
         gl.glBindTexture(gl.GL_TEXTURE_2D, arrayTexturas[1]);
         GLUtils.texImage2D(gl.GL_TEXTURE_2D, 0, bitmap1, 0);
         gl.glTexParameterf(gl.GL_TEXTURE_2D, gl.GL_TEXTURE_MAG_FILTER, gl.GL_LINEAR);
@@ -155,6 +154,28 @@ public class RenderObjModel implements GLSurfaceView.Renderer {
         gl.glTexParameterf(gl.GL_TEXTURE_2D, gl.GL_TEXTURE_MIN_FILTER, gl.GL_LINEAR);
 
         bitmap5.recycle();
+
+        Bitmap bitmap6;
+        atardecer2 = new CuadradoTextura();
+
+        bitmap6 = BitmapFactory.decodeResource(context.getResources(), R.drawable.infinito);
+        gl.glBindTexture(gl.GL_TEXTURE_2D, arrayTexturas[9]);
+        GLUtils.texImage2D(gl.GL_TEXTURE_2D, 0, bitmap6, 0);
+        gl.glTexParameterf(gl.GL_TEXTURE_2D, gl.GL_TEXTURE_MAG_FILTER, gl.GL_LINEAR);
+        gl.glTexParameterf(gl.GL_TEXTURE_2D, gl.GL_TEXTURE_MIN_FILTER, gl.GL_LINEAR);
+
+        bitmap6.recycle();
+
+        Bitmap bitmap7;
+        atardecer3 = new CuadradoTextura();
+
+        bitmap7 = BitmapFactory.decodeResource(context.getResources(), R.drawable.infinito);
+        gl.glBindTexture(gl.GL_TEXTURE_2D, arrayTexturas[10]);
+        GLUtils.texImage2D(gl.GL_TEXTURE_2D, 0, bitmap7, 0);
+        gl.glTexParameterf(gl.GL_TEXTURE_2D, gl.GL_TEXTURE_MAG_FILTER, gl.GL_LINEAR);
+        gl.glTexParameterf(gl.GL_TEXTURE_2D, gl.GL_TEXTURE_MIN_FILTER, gl.GL_LINEAR);
+
+        bitmap7.recycle();
     }
 
     @Override
@@ -175,7 +196,7 @@ public class RenderObjModel implements GLSurfaceView.Renderer {
         gl.glTexEnvf(gl.GL_TEXTURE_ENV, gl.GL_TEXTURE_ENV_MODE, gl.GL_REPLACE);//Configura el modo de mezcla de textura. Aqui usado para que no se mezcle con los colores definidos en la geometria.
 
         GLU.gluLookAt(gl,
-                0, 5, 15,
+                0, 5, 20,
                 0, 0, 0,
                 0, 1, 0
         );
@@ -203,11 +224,14 @@ public class RenderObjModel implements GLSurfaceView.Renderer {
 
             gl.glPushMatrix();
             {
+
                 gl.glBindTexture(GL10.GL_TEXTURE_2D, arrayTexturas[8]);// Textura a usar
-                gl.glTranslatef(1, 0.8f, 10.5f);
+                gl.glTranslatef(1, -1f, 8.8f);
                 gl.glScalef(0.6f, 0.6f, 0.6f);
                 balonPlaya.dibujar(gl);
+
             }gl.glPopMatrix();
+
 
         gl.glPushMatrix();
         {
@@ -221,6 +245,7 @@ public class RenderObjModel implements GLSurfaceView.Renderer {
         }
         gl.glPopMatrix();
 
+
         gl.glPushMatrix();
         {
             gl.glTranslatef(-0.5f, -1f, 9);
@@ -231,9 +256,24 @@ public class RenderObjModel implements GLSurfaceView.Renderer {
             langosta2.dibujar(gl);
         }
         gl.glPopMatrix();
+
             translacion += translacionDelta;
+
         }
         gl.glPopMatrix();
+
+
+        gl.glPushMatrix();
+        {
+            gl.glTranslatef(-0.45f, -1f, 11);
+            gl.glScalef(0.2f, 0.2f, 0.2f);
+            gl.glRotatef(90, 1, 0, 0);
+            gl.glRotatef(90, 0, 0, 1);
+            gl.glRotatef(180, 0, 1, 0);
+            langosta3.dibujar(gl);
+        }
+        gl.glPopMatrix();
+
 
         gl.glPushMatrix();
         {
@@ -245,13 +285,15 @@ public class RenderObjModel implements GLSurfaceView.Renderer {
         }
         gl.glPopMatrix();
 
+
         gl.glPushMatrix();
         {
-            gl.glTranslatef(0, -1f, 3);
+            gl.glTranslatef(0, -2f, 3);
             gl.glScalef(0.5f, 0.5f, 0.5f);
             canoa.dibujar(gl);
         }
         gl.glPopMatrix();
+
 
         gl.glPushMatrix();
         {
@@ -261,6 +303,7 @@ public class RenderObjModel implements GLSurfaceView.Renderer {
         }
         gl.glPopMatrix();
 
+
         gl.glPushMatrix();
         {
             gl.glTranslatef(6, -0.8f, 12);
@@ -268,6 +311,7 @@ public class RenderObjModel implements GLSurfaceView.Renderer {
             palmera2.dibujar(gl);
         }
         gl.glPopMatrix();
+
 
         gl.glPushMatrix();
         {
@@ -278,6 +322,7 @@ public class RenderObjModel implements GLSurfaceView.Renderer {
         }
         gl.glPopMatrix();
 
+
         gl.glPushMatrix();
         {
             gl.glTranslatef(-3, 4.5f, 3);
@@ -286,6 +331,7 @@ public class RenderObjModel implements GLSurfaceView.Renderer {
             ave2.dibujar(gl);
         }
         gl.glPopMatrix();
+
 
         gl.glPushMatrix(); {
 
@@ -296,6 +342,27 @@ public class RenderObjModel implements GLSurfaceView.Renderer {
 
         }gl.glPopMatrix();
 
+        gl.glPushMatrix(); {
+
+            gl.glBindTexture(GL10.GL_TEXTURE_2D, arrayTexturas[9]);// Textura a usar
+            gl.glTranslatef(7, 4.5f, 2);
+            gl.glRotatef(90,0,1,0);
+            gl.glScalef(5.0f, 5.5f, 1.0f);
+            atardecer2.dibujar(gl);
+
+        }gl.glPopMatrix();
+
+        gl.glPushMatrix(); {
+
+            gl.glBindTexture(GL10.GL_TEXTURE_2D, arrayTexturas[10]);// Textura a usar
+            gl.glTranslatef(-7, 4.5f, 2);
+            gl.glRotatef(90,0,1,0);
+            gl.glScalef(5.0f, 5.5f, 1.0f);
+            atardecer3.dibujar(gl);
+
+        }gl.glPopMatrix();
+
+
         gl.glPushMatrix();
         {
             gl.glBindTexture(GL10.GL_TEXTURE_2D, arrayTexturas[1]);// Textura a usar
@@ -304,6 +371,7 @@ public class RenderObjModel implements GLSurfaceView.Renderer {
             gl.glRotatef(90, 1.0f, 0.0f, 0.0f);
             mar.dibujar(gl);
         }gl.glPopMatrix();
+
 
         gl.glPushMatrix();
         {
@@ -314,13 +382,15 @@ public class RenderObjModel implements GLSurfaceView.Renderer {
             arena.dibujar(gl);
         }gl.glPopMatrix();
 
+
         gl.glPushMatrix();
         {
-            gl.glTranslatef(-5, 0, 10);
+            gl.glTranslatef(-5, 1, 10);
             gl.glScalef(0.1f, 2.5f, 0.1f);
             sombrilla.dibujar(gl);
         }
         gl.glPopMatrix();
+
 
         gl.glPushMatrix();
         {
@@ -328,13 +398,9 @@ public class RenderObjModel implements GLSurfaceView.Renderer {
             gl.glEnableClientState(gl.GL_TEXTURE_COORD_ARRAY);//Estado de las coordenadas de textura
 
             //AFECTA TODA LA ESCENA--------------------------
-            gl.glTranslatef(-5, 2.5f, 10);
+            gl.glTranslatef(-5, 3.5f, 10);
             gl.glScalef(1f, 0.45f, 1f);
-            //gl.glRotatef(-vIncremento * 2, 1f, 0f, 0f);
-            //gl.glRotatef(-vIncremento, 0f, 1f, 0f);
             //-----------------------------------------------
-
-            //gl.glRotatef(180, 1,0,0);
 
             // Triangulo0
             gl.glBindTexture(GL10.GL_TEXTURE_2D, arrayTexturas[3]);//Textura a usar
@@ -358,6 +424,7 @@ public class RenderObjModel implements GLSurfaceView.Renderer {
         }
         gl.glPopMatrix();
 
+
         gl.glPushMatrix();
         {
             gl.glBindTexture(GL10.GL_TEXTURE_2D, arrayTexturas[7]);// Textura a usar
@@ -368,23 +435,12 @@ public class RenderObjModel implements GLSurfaceView.Renderer {
 
         }gl.glPopMatrix();
 
-        gl.glPushMatrix();
-        {
-            gl.glTranslatef(1, -0.8f, 11);
-            gl.glScalef(0.5f,0.5f,0.3f);
-            gl.glRotatef(vIncremento * 2, 0, 1, 0);
-            dona.dibujar(gl);
-        }
-        gl.glPopMatrix();
 
         gl.glPushMatrix();
         {
-            gl.glTranslatef(-0.45f, -1f, 11);
-            gl.glScalef(0.2f, 0.2f, 0.2f);
-            gl.glRotatef(90, 1, 0, 0);
-            gl.glRotatef(90, 0, 0, 1);
-            gl.glRotatef(180, 0, 1, 0);
-            langosta3.dibujar(gl);
+            gl.glTranslatef(1, 0f, 11);
+            gl.glScalef(0.5f,0.5f,0.3f);
+            dona.dibujar(gl);
         }
         gl.glPopMatrix();
     }

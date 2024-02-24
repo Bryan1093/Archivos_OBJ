@@ -25,17 +25,13 @@ public class CuadradoTextura {
 
     public CuadradoTextura(){
 
-        float[] vertices ={//TEXTURA
+        float[] vertices ={
                 1,1,//0
                 1,-1,//1
                 -1,-1,//2
                 -1,1//3
         };
-        float[] textura ={//TEXTURA
-//                1,1,
-//                1,0,
-//                0,0,
-//                0,1
+        float[] textura ={
                 1,0,
                 1,1,
                 0,1,
@@ -63,7 +59,6 @@ public class CuadradoTextura {
         bufferColores = Funciones.generarBuffer(colores);
         bufferTexturas = Funciones.generarBuffer(textura);//TEXTURA
 
-
         bufferIndice = ByteBuffer.allocateDirect(indices.length); //Ya no tengo que multiplicar por 4 porque ya es byte
         bufferIndice.order(ByteOrder.nativeOrder());
         bufferIndice.put(indices);
@@ -75,7 +70,6 @@ public class CuadradoTextura {
         gl.glVertexPointer(comPorVertices,gl.GL_FLOAT,0,bufferVertices);
         gl.glEnableClientState(gl.GL_VERTEX_ARRAY);
 
-
         bufferColores.position(0);
         gl.glColorPointer(comPorColor,gl.GL_FLOAT,0,bufferColores);
         gl.glEnableClientState(gl.GL_COLOR_ARRAY);
@@ -85,12 +79,9 @@ public class CuadradoTextura {
 
         gl.glDrawElements(gl.GL_TRIANGLES,6,gl.GL_UNSIGNED_BYTE, bufferIndice); //DRAW ELEMENTS
 
-
         gl.glFrontFace(gl.GL_CW);
         gl.glDisableClientState(gl.GL_VERTEX_ARRAY);
         gl.glDisableClientState(gl.GL_COLOR_ARRAY);
         gl.glDisableClientState(gl.GL_TEXTURE_COORD_ARRAY);//TEXTURA
-
-
     }
 }

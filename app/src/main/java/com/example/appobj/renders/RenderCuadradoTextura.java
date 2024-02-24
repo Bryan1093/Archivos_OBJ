@@ -54,7 +54,7 @@ public class RenderCuadradoTextura implements GLSurfaceView.Renderer {
         Bitmap bitmap1;
         mar = new MarTextura();
 
-        bitmap1 = BitmapFactory.decodeResource(context.getResources(), R.drawable.mar);
+        bitmap1 = BitmapFactory.decodeResource(context.getResources(), R.drawable.mar1);
         gl.glBindTexture(gl.GL_TEXTURE_2D, arrayTexturas[1]);
         GLUtils.texImage2D(gl.GL_TEXTURE_2D, 0, bitmap1, 0);
         gl.glTexParameterf(gl.GL_TEXTURE_2D, gl.GL_TEXTURE_MAG_FILTER, gl.GL_LINEAR);
